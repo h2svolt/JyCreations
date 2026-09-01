@@ -21,6 +21,20 @@ const EFFORT = 5; // 0–6, higher = smaller file but slower
 // Skip anything already WebP under a certain size — probably already optimised.
 const SKIP_WEBP_UNDER_BYTES = 300 * 1024;
 
+// Windows antivirus/indexing briefly locks freshly-written files, which can
+// make the rename below fail with EPERM. Retry a few times before giving up.
+async function renameWithRetry(from, to, attempts = 5) {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      await fs.rename(from, to);
+      return;
+    } catch (err) {
+      if (err.code !== "EPERM" || i === attempts - 1) throw err;
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
+  }
+}
+
 async function* walk(dir) {
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
@@ -85,7 +99,7 @@ for (const root of ROOTS) {
       // Write to a temp path first so a crash never leaves a half-written file.
       const tmp = `${target}.tmp`;
       await fs.writeFile(tmp, buffer);
-      await fs.rename(tmp, target);
+      await renameWithRetry(tmp, target);
 
       // If the original had a different extension, remove it.
       if (path.resolve(file) !== path.resolve(target)) {

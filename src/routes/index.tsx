@@ -8,13 +8,13 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import heroPrimary from "@/assets/Cover.webp";
-import hero2 from "@/assets/hero2.png";
-import hero3 from "@/assets/hero3.png";
-import hero4 from "@/assets/hero4.png";
-import storyPhotoMain from "@/assets/dec1.png";
-import storyPhotoOne from "@/assets/dec2.png";
-import storyPhotoTwo from "@/assets/dec3.png";
-import whyChooseBg from "@/assets/hero_below.png";
+import hero2 from "@/assets/hero2.webp";
+import hero3 from "@/assets/hero3.webp";
+import hero4 from "@/assets/hero4.webp";
+import storyPhotoMain from "@/assets/dec1.webp";
+import storyPhotoOne from "@/assets/dec2.webp";
+import storyPhotoTwo from "@/assets/dec3.webp";
+import whyChooseBg from "@/assets/hero_below.webp";
 import { collections } from "@/lib/collections";
 import { getProducts, formatPrice } from "@/lib/products";
 import { Link } from "@tanstack/react-router";

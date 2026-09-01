@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import hero from "@/assets/dec1.png";
+import hero from "@/assets/dec1.webp";
 import { Heart, Scissors, Sparkles } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 
