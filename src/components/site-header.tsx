@@ -154,7 +154,7 @@ export function SiteHeader() {
             alt="JY Creations"
             width={160}
             height={64}
-            className="w-auto shrink-0"
+            className="h-[52px] w-auto shrink-0"
             animate={{ height: scrolled ? 40 : 52 }}
             transition={{ duration: 0.3, ease: easeOut }}
           />
