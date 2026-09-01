@@ -186,7 +186,13 @@ function HomePage() {
         {/* Hero */}
         <section
           ref={heroRef}
-          className="relative flex min-h-[640px] items-center overflow-hidden bg-ink lg:min-h-screen"
+          className={cn(
+            "relative flex items-center overflow-hidden bg-ink transition-[min-height] duration-1000 ease-in-out lg:min-h-screen",
+            // Only the Cover slide carries text, so only it needs the taller
+            // floor — the image-only slides get a shorter one on mobile so
+            // their wide banner shots don't get cropped nearly as hard.
+            heroIndex === 0 ? "min-h-[640px]" : "min-h-[420px]",
+          )}
         >
           <motion.div className="absolute inset-0" style={{ y: heroY }}>
             <AnimatePresence>
