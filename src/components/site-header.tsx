@@ -148,19 +148,36 @@ export function SiteHeader() {
           scrolled ? "py-2" : "py-3",
         )}
       >
-        <Link to="/" className="flex items-center gap-3 transition-opacity hover:opacity-90">
-          <motion.img
-            src={logo}
-            alt="JY Creations"
-            width={160}
-            height={64}
-            className="h-[52px] w-auto shrink-0"
-            animate={{ height: scrolled ? 40 : 52 }}
+        <Link
+          to="/"
+          className="group flex min-w-0 items-center gap-2.5 transition-opacity hover:opacity-95"
+          aria-label="JY Creations home"
+        >
+          <motion.span
+            className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-[#ead9cf] shadow-[0_5px_16px_-10px_rgba(0,0,0,0.85)] ring-1 ring-cream-light/15 sm:h-12 sm:w-12"
+            animate={{
+              width: scrolled ? 40 : undefined,
+              height: scrolled ? 40 : undefined,
+            }}
             transition={{ duration: 0.3, ease: easeOut }}
-          />
-          <span className="hidden flex-col leading-tight sm:flex">
-            <span className="font-display text-lg text-cream-light">jycreations</span>
-            <span className="text-[11px] text-cream-light/50">Handmade with love</span>
+          >
+            <img
+              src={logo}
+              alt=""
+              aria-hidden="true"
+              width={96}
+              height={96}
+              className="h-full w-full scale-[1.06] object-cover"
+            />
+          </motion.span>
+
+          <span className="hidden min-w-0 flex-col justify-center leading-none sm:flex">
+            <span className="font-display text-[20px] tracking-[-0.02em] text-cream-light lg:text-[21px]">
+              jycreations
+            </span>
+            <span className="mt-1 text-[9px] font-medium uppercase tracking-[0.18em] text-cream-light/50">
+              Handmade with love
+            </span>
           </span>
         </Link>
 
