@@ -125,7 +125,17 @@ export function SiteHeader() {
   const { totalQuantity, hydrated, openCart } = useCart();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    // A single threshold flips back and forth on every tiny scroll jitter
+    // right at that line (trackpads/wheels rarely land exactly on it twice
+    // in a row), which made the header visibly shake. A dead zone between
+    // the two thresholds means it only flips once per direction.
+    const onScroll = () => {
+      setScrolled((prev) => {
+        if (window.scrollY > 40) return true;
+        if (window.scrollY < 16) return false;
+        return prev;
+      });
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -154,10 +164,11 @@ export function SiteHeader() {
           className="group flex min-w-0 items-center gap-2.5 transition-opacity hover:opacity-95"
           aria-label="JY Creations home"
         >
-          <motion.span
-            className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-[#ead9cf] shadow-[0_5px_16px_-10px_rgba(0,0,0,0.85)] ring-1 ring-cream-light/15 sm:h-12 sm:w-12"
-            animate={scrolled ? { width: 40, height: 40 } : {}}
-            transition={{ duration: 0.3, ease: easeOut }}
+          <span
+            className={cn(
+              "relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-[#ead9cf] shadow-[0_5px_16px_-10px_rgba(0,0,0,0.85)] ring-1 ring-cream-light/15 transition-[height,width] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              scrolled ? "h-10 w-10" : "h-11 w-11 sm:h-12 sm:w-12",
+            )}
           >
             <img
               src={logo}
@@ -167,7 +178,7 @@ export function SiteHeader() {
               height={96}
               className="h-full w-full scale-[1.06] object-cover"
             />
-          </motion.span>
+          </span>
 
           <span className="hidden min-w-0 flex-col justify-center leading-none sm:flex">
             <span className="font-display text-[20px] tracking-[-0.02em] text-cream-light lg:text-[21px]">
