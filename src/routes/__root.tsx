@@ -19,6 +19,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { easeOut } from "../components/motion";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
+import { allProductsQueryOptions } from "../lib/products-query";
 
 function NotFoundComponent() {
   return (
@@ -116,6 +117,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(allProductsQueryOptions()),
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,

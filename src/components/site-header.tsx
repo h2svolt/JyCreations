@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Menu, Search, ShoppingBag, Star, User, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { toast } from "sonner";
 import logo from "@/assets/jy-creations-logo.webp";
 import { useCart } from "@/lib/cart";
-import { getAllProducts } from "@/lib/products";
+import { allProductsQueryOptions } from "@/lib/products-query";
 import { cn } from "@/lib/utils";
 import { easeOut, staggerContainerVariants, staggerItemVariants } from "@/components/motion";
 
@@ -45,11 +46,11 @@ function HeaderSearch() {
     };
   }, [open]);
 
+  const { data: allProducts = [] } = useQuery(allProductsQueryOptions());
+
   const trimmed = query.trim().toLowerCase();
   const results = trimmed
-    ? getAllProducts()
-        .filter((p) => p.name.toLowerCase().includes(trimmed))
-        .slice(0, 6)
+    ? allProducts.filter((p) => p.name.toLowerCase().includes(trimmed)).slice(0, 6)
     : [];
 
   return (

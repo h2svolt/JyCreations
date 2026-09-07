@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import {
   Carousel,
@@ -17,6 +18,7 @@ import storyPhotoTwo from "@/assets/dec3.webp";
 import whyChooseBg from "@/assets/hero_below.webp";
 import { collections } from "@/lib/collections";
 import { getProducts, formatPrice } from "@/lib/products";
+import { allProductsQueryOptions } from "@/lib/products-query";
 import { Link } from "@tanstack/react-router";
 import {
   Award,
@@ -80,15 +82,6 @@ const whyChooseUs = [
     desc: "Beautifully packed and ready to make someone smile.",
   },
 ];
-
-// Best sellers are drawn from real catalogue photos — one lead piece per
-// collection that already has product images, so the carousel never shows a
-// broken thumbnail.
-const bestSellers = collections
-  .map((collection) => getProducts(collection.id, collection.shortName)[0])
-  .filter((product): product is NonNullable<typeof product> => Boolean(product));
-
-const instagramShots = bestSellers.slice(0, 6);
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -164,6 +157,17 @@ function NewsletterForm() {
 }
 
 function HomePage() {
+  const { data: allProducts } = useSuspenseQuery(allProductsQueryOptions());
+
+  // Best sellers are drawn from real catalogue photos — one lead piece per
+  // collection that already has product images, so the carousel never shows
+  // a broken thumbnail.
+  const bestSellers = collections
+    .map((collection) => getProducts(allProducts, collection.id)[0])
+    .filter((product): product is NonNullable<typeof product> => Boolean(product));
+
+  const instagramShots = bestSellers.slice(0, 6);
+
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,

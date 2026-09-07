@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Images } from "lucide-react";
 import { useState, type CSSProperties } from "react";
 import { collections } from "@/lib/collections";
 import { getProducts, formatPrice } from "@/lib/products";
+import { allProductsQueryOptions } from "@/lib/products-query";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { categoryStyleVars } from "@/lib/category-theme";
@@ -36,8 +38,9 @@ export const Route = createFileRoute("/shop/$collectionId/")({
 
 function CollectionPage() {
   const { collectionId } = Route.useParams();
+  const { data: allProducts } = useSuspenseQuery(allProductsQueryOptions());
   const collection = collections.find((c) => c.id === collectionId);
-  const products = collection ? getProducts(collection.id, collection.shortName) : [];
+  const products = collection ? getProducts(allProducts, collection.id) : [];
   const [sortOrder, setSortOrder] = useState<SortOrder>("default");
 
   const sortedProducts =

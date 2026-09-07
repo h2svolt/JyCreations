@@ -1,21 +1,31 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { ArrowLeft, Minus, Plus } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { collections } from "@/lib/collections";
 import { getProduct, getProducts, formatPrice } from "@/lib/products";
+import { allProductsQueryOptions } from "@/lib/products-query";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { easeOut, Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { categoryStyleVars } from "@/lib/category-theme";
 import type { CSSProperties } from "react";
 
 export const Route = createFileRoute("/shop/$collectionId/$productId")({
-  head: ({ params }) => {
+  loader: async ({ params, context }) => {
     const collection = collections.find((c) => c.id === params.collectionId);
-    const product = collection
-      ? getProduct(collection.id, collection.shortName, params.productId)
-      : undefined;
+    if (!collection) throw notFound();
+
+    const allProducts = await context.queryClient.ensureQueryData(allProductsQueryOptions());
+    const product = getProduct(allProducts, collection.id, params.productId);
+    if (!product) throw notFound();
+
+    return { product };
+  },
+  head: ({ params, loaderData }) => {
+    const collection = collections.find((c) => c.id === params.collectionId);
+    const product = loaderData?.product;
 
     return {
       meta: [
@@ -31,27 +41,19 @@ export const Route = createFileRoute("/shop/$collectionId/$productId")({
       ],
     };
   },
-  loader: ({ params }) => {
-    const collection = collections.find((c) => c.id === params.collectionId);
-    if (!collection) throw notFound();
-
-    const product = getProduct(collection.id, collection.shortName, params.productId);
-    if (!product) throw notFound();
-
-    return { collectionId: collection.id, productId: product.slug };
-  },
   component: ProductPage,
 });
 
 function ProductPage() {
-  const { collectionId, productId } = Route.useParams();
+  const { collectionId } = Route.useParams();
+  const { product } = Route.useLoaderData();
+  const { data: allProducts } = useSuspenseQuery(allProductsQueryOptions());
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
 
   const collection = collections.find((c) => c.id === collectionId)!;
-  const product = getProduct(collection.id, collection.shortName, productId)!;
 
-  const related = getProducts(collection.id, collection.shortName)
+  const related = getProducts(allProducts, collection.id)
     .filter((p) => p.slug !== product.slug)
     .slice(0, 3);
 
