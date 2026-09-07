@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Facebook, Mail, MessageCircle } from "lucide-react";
+import { Instagram, Facebook, Mail, MessageCircle, Youtube } from "lucide-react";
 import logo from "@/assets/jy-creations-logo.webp";
 import { Reveal } from "@/components/motion";
 import { collections } from "@/lib/collections";
@@ -56,6 +56,32 @@ export function SiteFooter() {
                 aria-label="WhatsApp"
               >
                 <MessageCircle className="h-4 w-4" color="#25D366" />
+              </a>
+              <a
+                href="https://youtube.com/@jycreations976?si=fo1n5z6KrDvt0pAl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="grid h-9 w-9 place-items-center rounded-full bg-cream-light/8 transition-all hover:bg-cream-light/15"
+                aria-label="YouTube"
+              >
+                <Youtube className="h-4 w-4" color="#FF0000" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@jycreations1?_r=1&_t=ZS-99XPr0rWQlw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="grid h-9 w-9 place-items-center rounded-full bg-cream-light/8 transition-all hover:bg-cream-light/15"
+                aria-label="TikTok"
+              >
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  color="#ffffff"
+                  aria-hidden="true"
+                >
+                  <path d="M16.6 5.82c-.9-.98-1.4-2.26-1.4-3.62h-3.14v13.9c0 1.6-1.3 2.9-2.9 2.9s-2.9-1.3-2.9-2.9 1.3-2.9 2.9-2.9c.3 0 .58.05.85.13V10.2a6.06 6.06 0 0 0-.85-.06 6.08 6.08 0 1 0 6.08 6.08V9.4a9.15 9.15 0 0 0 5.3 1.7V8a5.85 5.85 0 0 1-3.94-2.18z" />
+                </svg>
               </a>
             </div>
           </div>
