@@ -1,8 +1,21 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Facebook, Mail, MessageCircle, Youtube } from "lucide-react";
+import { Instagram, Facebook, Mail, Youtube } from "lucide-react";
 import logo from "@/assets/jy-creations-logo.webp";
 import { Reveal } from "@/components/motion";
 import { collections } from "@/lib/collections";
+
+function WhatsAppIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 32 32"
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+    >
+      <path d="M16.04 2.667C8.69 2.667 2.708 8.647 2.708 16c0 2.35.613 4.646 1.78 6.67L2.6 29.6l7.087-1.86A13.3 13.3 0 0 0 16.04 29.333h.006c7.35 0 13.333-5.98 13.333-13.333S23.397 2.667 16.04 2.667Zm0 24.267h-.004a10.93 10.93 0 0 1-5.575-1.527l-.4-.237-4.206 1.104 1.122-4.098-.26-.42A10.9 10.9 0 0 1 5.042 16c0-6.03 4.91-10.933 10.998-10.933 6.03 0 10.933 4.903 10.933 10.933s-4.903 10.934-10.933 10.934Zm5.995-8.197c-.328-.164-1.94-.958-2.24-1.067-.3-.11-.518-.164-.737.164-.218.328-.846 1.067-1.037 1.286-.191.218-.382.246-.71.082-.328-.164-1.385-.51-2.638-1.627-.975-.87-1.633-1.944-1.824-2.272-.191-.328-.02-.505.144-.668.148-.147.328-.383.492-.574.164-.191.218-.328.328-.547.109-.219.055-.41-.027-.574-.082-.164-.737-1.777-1.01-2.433-.266-.639-.537-.552-.737-.562-.19-.01-.41-.012-.628-.012-.219 0-.574.082-.874.41-.3.328-1.146 1.12-1.146 2.734 0 1.613 1.174 3.171 1.338 3.39.164.218 2.31 3.527 5.595 4.946.782.338 1.392.54 1.868.691.785.25 1.5.215 2.065.13.63-.094 1.94-.793 2.213-1.558.273-.765.273-1.422.191-1.558-.082-.137-.3-.219-.628-.383Z" />
+    </svg>
+  );
+}
 
 export function SiteFooter() {
   const shopLinks = collections.slice(0, 5);
@@ -12,8 +25,18 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-6 py-16">
         <Reveal className="mb-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
-            <Link to="/" className="inline-block">
-              <img src={logo} alt="JY Creations" width={140} height={56} className="h-14 w-auto" />
+            <Link
+              to="/"
+              className="inline-flex items-center"
+              aria-label="JY Creations home"
+            >
+              <img
+                src={logo}
+                alt="JY Creations"
+                width={84}
+                height={84}
+                className="h-[72px] w-[72px] object-cover [clip-path:circle(48%_at_50%_50%)]"
+              />
             </Link>
             <p className="max-w-xs text-sm leading-relaxed text-cream-light/50">
               Handmade with love. Each piece is crafted to bring a little more beauty and joy into
@@ -47,15 +70,15 @@ export function SiteFooter() {
               >
                 <Mail className="h-4 w-4" color="#EA4335" />
               </a>
-              {/* TODO: replace with the real wa.me/<number> link once it's provided. */}
               <a
                 href="https://wa.me/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="grid h-9 w-9 place-items-center rounded-full bg-cream-light/8 transition-all hover:bg-cream-light/15"
+                className="grid h-9 w-9 place-items-center rounded-full bg-cream-light/8 text-[#25D366] transition-all hover:bg-cream-light/15"
                 aria-label="WhatsApp"
+                title="WhatsApp"
               >
-                <MessageCircle className="h-4 w-4" color="#25D366" />
+                <WhatsAppIcon className="h-[18px] w-[18px]" />
               </a>
               <a
                 href="https://youtube.com/@jycreations976?si=fo1n5z6KrDvt0pAl"
