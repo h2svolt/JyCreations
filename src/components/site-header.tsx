@@ -155,10 +155,7 @@ export function SiteHeader() {
         >
           <motion.span
             className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-[#ead9cf] shadow-[0_5px_16px_-10px_rgba(0,0,0,0.85)] ring-1 ring-cream-light/15 sm:h-12 sm:w-12"
-            animate={{
-              width: scrolled ? 40 : undefined,
-              height: scrolled ? 40 : undefined,
-            }}
+            animate={scrolled ? { width: 40, height: 40 } : {}}
             transition={{ duration: 0.3, ease: easeOut }}
           >
             <img

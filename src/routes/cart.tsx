@@ -201,15 +201,15 @@ function CartPage() {
                 </span>
               </div>
 
-              <button
-                type="button"
+              <Link
+                to="/checkout"
                 className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 Proceed to Checkout
-              </button>
+              </Link>
 
               <p className="mt-3 text-center text-xs text-muted-foreground">
-                Checkout is not yet connected. Prices shown are development placeholders.
+                Prices shown are development placeholders.
               </p>
             </div>
           </aside>
