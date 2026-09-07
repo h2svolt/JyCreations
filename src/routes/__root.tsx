@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
 
 import appCss from "../styles.css?url";
+import logo from "../assets/jy-creations-logo.webp";
 import { CartProvider } from "../lib/cart";
 import { CartSheet } from "../components/cart-sheet";
 import { Toaster } from "../components/ui/sonner";
@@ -124,11 +125,38 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+const SITE_URL = "https://www.jycreations.store";
+
+// Tells Google (and anything else reading structured data) who this business
+// is — name, logo, social profiles — so results like the "About this
+// result" panel have something to show instead of "No information is
+// available for this page."
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "JY Creations",
+  url: SITE_URL,
+  logo: `${SITE_URL}${logo}`,
+  description:
+    "Handmade dream catchers, table mats, key chains, bookmarks, coasters, bracelets, wallets, and glasses covers.",
+  email: "jycreations2@gmail.com",
+  sameAs: [
+    "https://www.instagram.com/jycreations1?igsi=MTB4NmI0aGt3YXI1ag==",
+    "https://www.facebook.com/share/19YSx35aDS/?mibextid=wwXIfr",
+    "https://youtube.com/@jycreations976?si=fo1n5z6KrDvt0pAl",
+    "https://www.tiktok.com/@jycreations1?_r=1&_t=ZS-99XPr0rWQlw",
+  ],
+};
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
       </head>
       <body>
         {children}
