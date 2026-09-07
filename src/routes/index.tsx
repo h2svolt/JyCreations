@@ -19,6 +19,7 @@ import whyChooseBg from "@/assets/hero_below.webp";
 import { collections } from "@/lib/collections";
 import { getProducts, formatPrice } from "@/lib/products";
 import { allProductsQueryOptions } from "@/lib/products-query";
+import { SITE_URL } from "@/lib/site";
 import { Link } from "@tanstack/react-router";
 import {
   Award,
@@ -99,8 +100,10 @@ export const Route = createFileRoute("/")({
           "Discover handmade dream catchers, table mats, key chains, bookmarks, coasters, bracelets, wallets, and glasses covers at JY Creations.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: SITE_URL },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: SITE_URL }],
   }),
   component: HomePage,
 });

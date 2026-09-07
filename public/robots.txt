@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://jycreations.store/sitemap.xml
+Sitemap: https://www.jycreations.store/sitemap.xml

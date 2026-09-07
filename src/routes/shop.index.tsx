@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { getCategoryTheme } from "@/lib/category-theme";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/shop/")({
   head: () => ({
@@ -17,8 +18,10 @@ export const Route = createFileRoute("/shop/")({
       { property: "og:title", content: "Shop Collections | JY Creations" },
       { property: "og:description", content: "Browse all handmade collections at JY Creations." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/shop` },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/shop` }],
   }),
   component: ShopIndexPage,
 });

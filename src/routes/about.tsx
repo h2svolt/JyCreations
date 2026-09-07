@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import hero from "@/assets/dec1.webp";
 import { Heart, Scissors, Sparkles } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -18,8 +19,10 @@ export const Route = createFileRoute("/about")({
         content: "Learn about JY Creations — handmade boutique crafts made with love.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/about` },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/about` }],
   }),
   component: AboutPage,
 });

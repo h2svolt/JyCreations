@@ -8,6 +8,9 @@ import { allProductsQueryOptions } from "@/lib/products-query";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { categoryStyleVars } from "@/lib/category-theme";
+import { SITE_URL } from "@/lib/site";
+import { breadcrumbSchema } from "@/lib/breadcrumb-schema";
+import { JsonLd } from "@/components/json-ld";
 import {
   Select,
   SelectContent,
@@ -21,16 +24,23 @@ type SortOrder = "default" | "price-asc" | "price-desc";
 export const Route = createFileRoute("/shop/$collectionId/")({
   head: ({ params }) => {
     const collection = collections.find((c) => c.id === params.collectionId);
+    const title = collection ? `${collection.name} | JY Creations` : "Collection | JY Creations";
+    const description =
+      collection?.description ?? "Browse our handmade collection at JY Creations.";
+    const url = `${SITE_URL}/shop/${params.collectionId}`;
+
     return {
       meta: [
-        {
-          title: collection ? `${collection.name} | JY Creations` : "Collection | JY Creations",
-        },
-        {
-          name: "description",
-          content: collection?.description ?? "Browse our handmade collection at JY Creations.",
-        },
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+        ...(collection ? [{ property: "og:image", content: collection.image }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   component: CollectionPage,
@@ -66,6 +76,12 @@ function CollectionPage() {
 
   return (
     <main className="pb-20" style={categoryStyleVars(collection.id) as CSSProperties}>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Shop", path: "/shop" },
+          { name: collection.name, path: `/shop/${collection.id}` },
+        ])}
+      />
       {/* Atmospheric hero: category cover as background with an overlay for
           text legibility. Falls back gracefully if the image is slow to paint. */}
       <section

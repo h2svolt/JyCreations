@@ -10,6 +10,10 @@ import { allProductsQueryOptions } from "@/lib/products-query";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { easeOut, Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { categoryStyleVars } from "@/lib/category-theme";
+import { SITE_URL } from "@/lib/site";
+import { breadcrumbSchema } from "@/lib/breadcrumb-schema";
+import { productSchema } from "@/lib/product-schema";
+import { JsonLd } from "@/components/json-ld";
 import type { CSSProperties } from "react";
 
 export const Route = createFileRoute("/shop/$collectionId/$productId")({
@@ -26,19 +30,24 @@ export const Route = createFileRoute("/shop/$collectionId/$productId")({
   head: ({ params, loaderData }) => {
     const collection = collections.find((c) => c.id === params.collectionId);
     const product = loaderData?.product;
+    const title = product ? `${product.name} | JY Creations` : "Product | JY Creations";
+    const description = product
+      ? `${product.name} — handmade ${collection?.name.toLowerCase() ?? "piece"} from JY Creations.`
+      : "Handmade pieces from JY Creations.";
+    const url = product ? `${SITE_URL}/shop/${params.collectionId}/${params.productId}` : undefined;
 
     return {
       meta: [
-        { title: product ? `${product.name} | JY Creations` : "Product | JY Creations" },
-        {
-          name: "description",
-          content: product
-            ? `${product.name} — handmade ${collection?.name.toLowerCase() ?? "piece"} from JY Creations.`
-            : "Handmade pieces from JY Creations.",
-        },
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
         { property: "og:type", content: "product" },
+        ...(url ? [{ property: "og:url", content: url }] : []),
         ...(product ? [{ property: "og:image", content: product.image }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
       ],
+      ...(url ? { links: [{ rel: "canonical", href: url }] } : {}),
     };
   },
   component: ProductPage,
@@ -59,6 +68,14 @@ function ProductPage() {
 
   return (
     <main className="pb-20" style={categoryStyleVars(collection.id) as CSSProperties}>
+      <JsonLd data={productSchema(product)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Shop", path: "/shop" },
+          { name: collection.shortName, path: `/shop/${collection.id}` },
+          { name: product.name, path: `/shop/${collection.id}/${product.slug}` },
+        ])}
+      />
       <div className="mx-auto max-w-7xl px-6 pt-8">
         <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm">
           <Link

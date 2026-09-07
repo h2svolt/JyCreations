@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Clock, Mail, MapPin, PackageSearch, RotateCcw, Truck, Zap } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/policies/shipping-policy")({
   head: () => ({
@@ -16,8 +17,10 @@ export const Route = createFileRoute("/policies/shipping-policy")({
         content: "Delivery options, timeframes, and shipping costs for JY Creations orders.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/policies/shipping-policy` },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/policies/shipping-policy` }],
   }),
   component: ShippingPolicyPage,
 });

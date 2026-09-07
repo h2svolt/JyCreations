@@ -13,6 +13,7 @@ import { AnimatePresence, motion, MotionConfig } from "motion/react";
 
 import appCss from "../styles.css?url";
 import logo from "../assets/jy-creations-logo.webp";
+import { SITE_URL } from "../lib/site";
 import { CartProvider } from "../lib/cart";
 import { CartSheet } from "../components/cart-sheet";
 import { Toaster } from "../components/ui/sonner";
@@ -101,6 +102,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Discover handmade dream catchers, table mats, key chains, bookmarks, coasters, bracelets, wallets, and glasses covers at JY Creations.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: `${SITE_URL}${logo}` },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@JYCreations" },
     ],
@@ -124,8 +126,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-const SITE_URL = "https://www.jycreations.store";
 
 // Tells Google (and anything else reading structured data) who this business
 // is — name, logo, social profiles — so results like the "About this

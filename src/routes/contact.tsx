@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { motion } from "motion/react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -19,8 +20,10 @@ export const Route = createFileRoute("/contact")({
         content: "Get in touch with JY Creations for custom orders and questions.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/contact` },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/contact` }],
   }),
   component: ContactPage,
 });
