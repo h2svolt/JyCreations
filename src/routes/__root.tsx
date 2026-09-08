@@ -96,6 +96,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Discover handmade dream catchers, table mats, key chains, bookmarks, coasters, bracelets, wallets, and glasses covers at JY Creations.",
       },
       { name: "author", content: "JY Creations" },
+      {
+        name: "google-site-verification",
+        content: "a-a_m_UkebT9c1HC8KvyEs5DL1ETjTZJml5Hxkw6XeM",
+      },
       { property: "og:title", content: "JY Creations | Handmade with Love" },
       {
         property: "og:description",
