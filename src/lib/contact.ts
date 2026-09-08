@@ -6,6 +6,12 @@ export const WHATSAPP_NUMBER = "923252327953";
 
 export const CONTACT_EMAIL = "jycreation2@gmail.com";
 
+export const BANK_DETAILS = {
+  bankName: "Meezan Bank",
+  accountNumber: "10420110841149",
+  accountTitle: "Nida Wahid",
+};
+
 /** Builds a wa.me link, optionally pre-filling the chat with `message`.
  * Falls back to the bare wa.me landing page while WHATSAPP_NUMBER is unset. */
 export function buildWhatsAppLink(message?: string): string {

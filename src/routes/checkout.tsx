@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { CheckCircle2, Landmark, ShoppingBag, Truck } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { formatPrice } from "@/lib/products";
-import { buildWhatsAppLink, CONTACT_EMAIL, WHATSAPP_NUMBER } from "@/lib/contact";
+import { BANK_DETAILS, buildWhatsAppLink, CONTACT_EMAIL, WHATSAPP_NUMBER } from "@/lib/contact";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export const Route = createFileRoute("/checkout")({
@@ -22,6 +22,13 @@ type PaymentMethod = "cod" | "bank";
 
 const inputClass =
   "w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring";
+
+const bankDetailsLines = [
+  "Bank transfer details:",
+  `Bank: ${BANK_DETAILS.bankName}`,
+  `Account title: ${BANK_DETAILS.accountTitle}`,
+  `Account number: ${BANK_DETAILS.accountNumber}`,
+];
 
 function CheckoutPage() {
   const { items, hydrated, totalQuantity, totalValue, clear } = useCart();
@@ -51,16 +58,43 @@ function CheckoutPage() {
       `Phone: ${phone}`,
       `Address: ${address}, ${city}`,
       notes.trim() ? `Notes: ${notes}` : undefined,
+      paymentMethod === "bank" ? "" : undefined,
+      ...(paymentMethod === "bank" ? bankDetailsLines : []),
     ]
-      .filter(Boolean)
+      .filter((line) => line !== undefined)
+      .join("\n");
+  };
+
+  const buildCustomerConfirmationMessage = () => {
+    const lines = items.map(
+      (item) => `• ${item.name} x${item.quantity} — ${formatPrice(item.price * item.quantity)}`,
+    );
+    return [
+      `Thank you for your order, ${fullName}!`,
+      "",
+      "Here's what you ordered:",
+      ...lines,
+      "",
+      `Total: ${formatPrice(totalValue)}`,
+      `Payment method: ${paymentMethod === "cod" ? "Cash on Delivery" : "Online Bank Transfer"}`,
+      "",
+      `Delivery address: ${address}, ${city}`,
+      paymentMethod === "bank" ? "" : undefined,
+      ...(paymentMethod === "bank"
+        ? [...bankDetailsLines, "", "Please send us a payment screenshot once transferred."]
+        : []),
+      "",
+      "We'll be in touch shortly to confirm your order. Thanks for shopping with JY Creations!",
+    ]
+      .filter((line) => line !== undefined)
       .join("\n");
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!fullName.trim() || !phone.trim() || !address.trim() || !city.trim()) {
-      toast.error("Please fill in your name, phone, address, and city.");
+    if (!fullName.trim() || !phone.trim() || !email.trim() || !address.trim() || !city.trim()) {
+      toast.error("Please fill in your name, phone, email, and address.");
       return;
     }
 
@@ -70,14 +104,17 @@ function CheckoutPage() {
     try {
       // No backend is connected — FormSubmit relays this straight to our inbox
       // without needing a server. The destination email confirms itself the
-      // first time it receives a submission from a new site.
+      // first time it receives a submission from a new site. `_autoresponse`
+      // also sends a copy of that message back to the customer's own email
+      // (the field literally named "email" below), which is why email is
+      // required at checkout now instead of optional.
       const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           name: fullName,
           phone,
-          email: email.trim() || "Not provided",
+          email: email.trim(),
           city,
           address,
           payment_method: paymentMethod === "cod" ? "Cash on Delivery" : "Online Bank Transfer",
@@ -89,9 +126,13 @@ function CheckoutPage() {
             )
             .join("; "),
           order_total: formatPrice(totalValue),
+          ...(paymentMethod === "bank"
+            ? { bank_details: bankDetailsLines.slice(1).join(" | ") }
+            : {}),
           _subject: `New JY Creations order — ${fullName} (${formatPrice(totalValue)})`,
           _template: "table",
-          ...(email.trim() ? { _replyto: email.trim() } : {}),
+          _replyto: email.trim(),
+          _autoresponse: buildCustomerConfirmationMessage(),
         }),
       });
 
@@ -120,13 +161,36 @@ function CheckoutPage() {
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-secondary">
           <CheckCircle2 className="h-8 w-8 text-primary" />
         </div>
-        <h1 className="mt-6 font-display text-3xl text-foreground">Order received!</h1>
+        <h1 className="mt-6 font-display text-3xl text-foreground">Order placed successfully!</h1>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Thank you, {fullName}. We've emailed your order to our team
+          Thank you, {fullName}. A confirmation with your order details has been emailed to you
           {WHATSAPP_NUMBER
-            ? " and opened WhatsApp so you can send us the details directly."
+            ? ", and we've opened WhatsApp so you can send us the order directly."
             : ". We'll reach out on WhatsApp or by phone shortly to confirm."}
         </p>
+        {paymentMethod === "bank" && (
+          <div className="mt-6 rounded-2xl bg-card p-5 text-left">
+            <p className="text-sm font-semibold text-foreground">Bank transfer details</p>
+            <dl className="mt-3 space-y-1.5 text-sm">
+              <div className="flex justify-between gap-4">
+                <dt className="text-muted-foreground">Bank</dt>
+                <dd className="text-foreground">{BANK_DETAILS.bankName}</dd>
+              </div>
+              <div className="flex justify-between gap-4">
+                <dt className="text-muted-foreground">Account title</dt>
+                <dd className="text-foreground">{BANK_DETAILS.accountTitle}</dd>
+              </div>
+              <div className="flex justify-between gap-4">
+                <dt className="text-muted-foreground">Account number</dt>
+                <dd className="font-medium text-foreground">{BANK_DETAILS.accountNumber}</dd>
+              </div>
+            </dl>
+            <p className="mt-3 text-xs text-muted-foreground">
+              These details were also emailed to you — please send a payment screenshot once
+              transferred.
+            </p>
+          </div>
+        )}
         <Link
           to="/shop"
           className="mt-8 inline-flex items-center justify-center rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
@@ -204,17 +268,21 @@ function CheckoutPage() {
 
             <div className="mt-6 space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-foreground">
-                Email <span className="text-muted-foreground">(optional)</span>
+                Email
               </label>
               <input
                 id="email"
                 type="email"
+                required
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 className={inputClass}
               />
+              <p className="text-xs text-muted-foreground">
+                We'll send your order confirmation here.
+              </p>
             </div>
 
             <div className="mt-6 grid gap-6 sm:grid-cols-[2fr_1fr]">
@@ -302,12 +370,22 @@ function CheckoutPage() {
                     Transfer the order total to our bank account before dispatch.
                   </p>
                   {paymentMethod === "bank" && (
-                    // TODO: replace with the real bank name, account title, and
-                    // account number/IBAN once they're provided.
-                    <p className="mt-3 rounded-lg bg-secondary/60 px-3 py-2 text-xs text-muted-foreground">
-                      We'll send our bank account details on WhatsApp/email right after you place
-                      this order.
-                    </p>
+                    <dl className="mt-3 space-y-1 rounded-lg bg-secondary/60 px-3 py-2.5 text-xs">
+                      <div className="flex justify-between gap-4">
+                        <dt className="text-muted-foreground">Bank</dt>
+                        <dd className="font-medium text-foreground">{BANK_DETAILS.bankName}</dd>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <dt className="text-muted-foreground">Account title</dt>
+                        <dd className="font-medium text-foreground">{BANK_DETAILS.accountTitle}</dd>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <dt className="text-muted-foreground">Account number</dt>
+                        <dd className="font-medium text-foreground">
+                          {BANK_DETAILS.accountNumber}
+                        </dd>
+                      </div>
+                    </dl>
                   )}
                 </div>
               </label>
