@@ -170,6 +170,30 @@ export const createProduct = createServerFn({ method: "POST" })
     return { success: true as const };
   });
 
+export const updateProductPrice = createServerFn({ method: "POST" })
+  .validator((input: unknown) => {
+    if (
+      typeof input !== "object" ||
+      input === null ||
+      !("id" in input) ||
+      !("price" in input) ||
+      typeof (input as { id: unknown }).id !== "string" ||
+      typeof (input as { price: unknown }).price !== "number"
+    ) {
+      throw new Error("Expected { id: string, price: number }.");
+    }
+    const { id, price } = input as { id: string; price: number };
+    if (!id) throw new Error("Product id is required.");
+    if (!Number.isFinite(price) || price <= 0) throw new Error("Price must be a positive number.");
+    return { id, price };
+  })
+  .handler(async ({ data: { id, price } }) => {
+    await requireAdmin();
+    const { error } = await getSupabaseAdmin().from("products").update({ price }).eq("id", id);
+    if (error) throw new Error(error.message);
+    return { success: true as const };
+  });
+
 export const deleteProduct = createServerFn({ method: "POST" })
   .validator((id: unknown) => {
     if (typeof id !== "string" || !id) throw new Error("Product id is required.");

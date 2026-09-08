@@ -2,12 +2,13 @@ import { createFileRoute, redirect, useNavigate, useRouter } from "@tanstack/rea
 import { useCallback, useMemo, useState, type FormEvent } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
-import { ImagePlus, LogOut, Trash2, UploadCloud, X } from "lucide-react";
+import { Check, ImagePlus, LogOut, Pencil, Trash2, UploadCloud, X } from "lucide-react";
 import { checkAdminSession, logout } from "@/lib/auth-actions";
 import {
   createProduct,
   deleteProduct,
   fetchAdminProducts,
+  updateProductPrice,
   type AdminProduct,
 } from "@/lib/products-actions";
 import { collections } from "@/lib/collections";
@@ -204,6 +205,119 @@ function AddProductForm({ onCreated }: { onCreated: () => void }) {
   );
 }
 
+function ProductRow({
+  product,
+  onDelete,
+  onPriceUpdated,
+  deleting,
+}: {
+  product: AdminProduct;
+  onDelete: (product: AdminProduct) => void;
+  onPriceUpdated: () => void;
+  deleting: boolean;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [priceInput, setPriceInput] = useState(String(product.price));
+  const [saving, setSaving] = useState(false);
+
+  const startEdit = () => {
+    setPriceInput(String(product.price));
+    setEditing(true);
+  };
+
+  const savePrice = async () => {
+    const newPrice = Number(priceInput);
+    if (!Number.isFinite(newPrice) || newPrice <= 0) {
+      toast.error("Price must be a positive number.");
+      return;
+    }
+    if (newPrice === product.price) {
+      setEditing(false);
+      return;
+    }
+    setSaving(true);
+    try {
+      await updateProductPrice({ data: { id: product.id, price: newPrice } });
+      toast.success(`${product.name} price updated.`);
+      setEditing(false);
+      onPriceUpdated();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to update price.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-3 rounded-2xl bg-card p-3 ring-1 ring-border/40">
+      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-secondary">
+        {product.images[0] && (
+          <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium text-foreground">{product.name}</p>
+        {editing ? (
+          <div className="mt-1 flex items-center gap-1.5">
+            <input
+              type="number"
+              min="1"
+              step="1"
+              autoFocus
+              value={priceInput}
+              onChange={(e) => setPriceInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  savePrice();
+                }
+                if (e.key === "Escape") setEditing(false);
+              }}
+              className="w-24 rounded-lg border border-input bg-background px-2 py-1 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring"
+            />
+            <button
+              type="button"
+              onClick={savePrice}
+              disabled={saving}
+              aria-label="Save price"
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-primary transition-colors hover:bg-secondary disabled:opacity-50"
+            >
+              <Check className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              disabled={saving}
+              aria-label="Cancel edit"
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-50"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={startEdit}
+            className="group/price mt-0.5 flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary"
+          >
+            {formatPrice(product.price)}
+            <Pencil className="h-3 w-3 opacity-0 transition-opacity group-hover/price:opacity-100" />
+          </button>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={() => onDelete(product)}
+        disabled={deleting}
+        aria-label={`Remove ${product.name}`}
+        className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
+      >
+        <Trash2 className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
 function AdminDashboard() {
   const products = Route.useLoaderData();
   const router = useRouter();
@@ -273,33 +387,13 @@ function AdminDashboard() {
               </h2>
               <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((product) => (
-                  <div
+                  <ProductRow
                     key={product.id}
-                    className="flex items-center gap-3 rounded-2xl bg-card p-3 ring-1 ring-border/40"
-                  >
-                    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-secondary">
-                      {product.images[0] && (
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="h-full w-full object-cover"
-                        />
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-foreground">{product.name}</p>
-                      <p className="text-sm text-muted-foreground">{formatPrice(product.price)}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(product)}
-                      disabled={removingId === product.id}
-                      aria-label={`Remove ${product.name}`}
-                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
+                    product={product}
+                    onDelete={handleDelete}
+                    onPriceUpdated={refresh}
+                    deleting={removingId === product.id}
+                  />
                 ))}
               </div>
             </section>
