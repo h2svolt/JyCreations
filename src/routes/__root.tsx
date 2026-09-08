@@ -14,6 +14,7 @@ import { AnimatePresence, motion, MotionConfig } from "motion/react";
 import appCss from "../styles.css?url";
 import logo from "../assets/jy-creations-logo.webp";
 import { SITE_URL } from "../lib/site";
+import { CONTACT_EMAIL } from "../lib/contact";
 import { CartProvider } from "../lib/cart";
 import { CartSheet } from "../components/cart-sheet";
 import { Toaster } from "../components/ui/sonner";
@@ -139,7 +140,7 @@ const organizationSchema = {
   logo: `${SITE_URL}${logo}`,
   description:
     "Handmade dream catchers, table mats, key chains, bookmarks, coasters, bracelets, wallets, and glasses covers.",
-  email: "jycreations2@gmail.com",
+  email: CONTACT_EMAIL,
   sameAs: [
     "https://www.instagram.com/jycreations1?igsi=MTB4NmI0aGt3YXI1ag==",
     "https://www.facebook.com/share/19YSx35aDS/?mibextid=wwXIfr",

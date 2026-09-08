@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Clock, Mail, MapPin, PackageSearch, RotateCcw, Truck, Zap } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { SITE_URL } from "@/lib/site";
+import { CONTACT_EMAIL, buildEmailLink } from "@/lib/contact";
 
 export const Route = createFileRoute("/policies/shipping-policy")({
   head: () => ({
@@ -166,12 +167,12 @@ function ShippingPolicyPage() {
             Reach out and we'll get back to you as soon as we can.
           </p>
           <a
-            href="https://mail.google.com/mail/?view=cm&fs=1&to=jycreations2@gmail.com"
+            href={buildEmailLink()}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-1 text-sm font-medium text-primary hover:underline"
           >
-            jycreations2@gmail.com
+            {CONTACT_EMAIL}
           </a>
         </Reveal>
       </section>

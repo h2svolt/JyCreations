@@ -3,7 +3,7 @@ import { Instagram, Facebook, Mail, Youtube } from "lucide-react";
 import logo from "@/assets/jy-creations-logo.webp";
 import { Reveal } from "@/components/motion";
 import { collections } from "@/lib/collections";
-import { buildWhatsAppLink } from "@/lib/contact";
+import { CONTACT_EMAIL, buildEmailLink, buildWhatsAppLink } from "@/lib/contact";
 
 function WhatsAppIcon({ className = "" }: { className?: string }) {
   return (
@@ -54,7 +54,7 @@ export function SiteFooter() {
                 <Facebook className="h-4 w-4" color="#1877F2" />
               </a>
               <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=jycreations2@gmail.com"
+                href={buildEmailLink()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="grid h-9 w-9 place-items-center rounded-full bg-cream-light/8 transition-all hover:bg-cream-light/15"
@@ -165,12 +165,12 @@ export function SiteFooter() {
               Have a question or want a custom order? We'd love to hear from you.
             </p>
             <a
-              href="https://mail.google.com/mail/?view=cm&fs=1&to=jycreations2@gmail.com"
+              href={buildEmailLink()}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block text-sm font-medium text-gold hover:underline"
             >
-              jycreations2@gmail.com
+              {CONTACT_EMAIL}
             </a>
           </div>
         </Reveal>

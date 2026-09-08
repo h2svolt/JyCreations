@@ -5,6 +5,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { motion } from "motion/react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { SITE_URL } from "@/lib/site";
+import { CONTACT_EMAIL, buildEmailLink } from "@/lib/contact";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -162,12 +163,12 @@ function ContactPage() {
                 <div>
                   <h3 className="font-display text-lg text-foreground">Email</h3>
                   <a
-                    href="https://mail.google.com/mail/?view=cm&fs=1&to=jycreations2@gmail.com"
+                    href={buildEmailLink()}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-1 text-sm text-muted-foreground hover:text-primary"
                   >
-                    jycreations2@gmail.com
+                    {CONTACT_EMAIL}
                   </a>
                 </div>
               </div>

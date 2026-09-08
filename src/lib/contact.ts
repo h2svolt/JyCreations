@@ -4,11 +4,16 @@
 
 export const WHATSAPP_NUMBER = "923252327953";
 
-export const CONTACT_EMAIL = "jycreations2@gmail.com";
+export const CONTACT_EMAIL = "jycreations1@gmail.com";
 
 /** Builds a wa.me link, optionally pre-filling the chat with `message`.
  * Falls back to the bare wa.me landing page while WHATSAPP_NUMBER is unset. */
 export function buildWhatsAppLink(message?: string): string {
   const base = WHATSAPP_NUMBER ? `https://wa.me/${WHATSAPP_NUMBER}` : "https://wa.me/";
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}
+
+/** Opens Gmail's compose UI addressed to CONTACT_EMAIL. */
+export function buildEmailLink(): string {
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}`;
 }
