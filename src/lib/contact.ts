@@ -4,7 +4,7 @@
 
 export const WHATSAPP_NUMBER = "923252327953";
 
-export const CONTACT_EMAIL = "jycreations1@gmail.com";
+export const CONTACT_EMAIL = "jycreation2@gmail.com";
 
 /** Builds a wa.me link, optionally pre-filling the chat with `message`.
  * Falls back to the bare wa.me landing page while WHATSAPP_NUMBER is unset. */
