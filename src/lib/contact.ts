@@ -2,9 +2,7 @@
  * site (footer icon, checkout order flow) reads from here, so updating the
  * number once fixes it everywhere. */
 
-// TODO: replace with the real WhatsApp number (country code + number, no
-// spaces, no leading +), e.g. "923001234567", once it's provided.
-export const WHATSAPP_NUMBER = "";
+export const WHATSAPP_NUMBER = "923252327963";
 
 export const CONTACT_EMAIL = "jycreations2@gmail.com";
 
