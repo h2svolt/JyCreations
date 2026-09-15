@@ -4,6 +4,9 @@
 
 export const WHATSAPP_NUMBER = "923252327953";
 
+/** Human-readable form of WHATSAPP_NUMBER, e.g. "+92 325 2327953". */
+export const PHONE_DISPLAY = WHATSAPP_NUMBER.replace(/^(\d{2})(\d{3})(\d{7})$/, "+$1 $2 $3");
+
 export const CONTACT_EMAIL = "jycreation2@gmail.com";
 
 export const BANK_DETAILS = {

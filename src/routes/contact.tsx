@@ -5,7 +5,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { motion } from "motion/react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { SITE_URL } from "@/lib/site";
-import { CONTACT_EMAIL, buildEmailLink } from "@/lib/contact";
+import { CONTACT_EMAIL, PHONE_DISPLAY, WHATSAPP_NUMBER, buildEmailLink } from "@/lib/contact";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -180,7 +180,12 @@ function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-display text-lg text-foreground">Phone</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">Available on request</p>
+                  <a
+                    href={`tel:+${WHATSAPP_NUMBER}`}
+                    className="mt-1 block text-sm text-muted-foreground hover:text-primary"
+                  >
+                    {PHONE_DISPLAY}
+                  </a>
                 </div>
               </div>
             </StaggerItem>
